@@ -1,9 +1,9 @@
 ### Call peaks
 
 # Use MACS2 to call peaks
+# bg4_input_rep.txt will have a ":" separated file with the first column being the name of the ChIP-seq sample and the second column being the name of the input sample
 
-
-for i in $(cat /mnt/BioScratch/danielasc/20200610/indexes/bg4_input_rep2.txt)
+for i in $(cat /mnt/BioScratch/danielasc/20200610/indexes/bg4_input_rep.txt)
 do
 echo ${i} > TEMP
 CHIP=$(cut -f1 -d: TEMP)
