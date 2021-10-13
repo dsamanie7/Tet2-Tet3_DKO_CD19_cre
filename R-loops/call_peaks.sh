@@ -29,3 +29,19 @@ qsub  /mnt/BioScratch/danielasc/Redo_Rloops/scripts/macs2_broad_${CHIP}-${INPUT}
 
 rm TEMP
 done
+
+### merge the peaks from the replicates (per condition)
+cd /mnt/BioScratch/danielasc/Redo_Rloops/macs2_chip_input
+
+mergePeaks 4WTRH_S21-3WTMN_S20-peaks-rm-pcr-broad-pval_peaks.broadPeak Dfl1-mapR_S33-Dfl1-control_S34-peaks-rm-pcr-broad-pval_peaks.broadPeak Dfl2-mapR_S35-Dfl2-control_S36-peaks-rm-pcr-broad-pval_peaks.broadPeak  -venn venn_mergepeaks_dfl123.txt > mergepeaks_dfl123.txt
+mergePeaks 1DKORH_S18-2DKOMN_S19-peaks-rm-pcr-broad-pval_peaks.broadPeak DKO1-mapR_S29-DKO1-control_S30-peaks-rm-pcr-broad-pval_peaks.broadPeak DKO2-mapR_S31-DKO2-control_S32-peaks-rm-pcr-broad-pval_peaks.broadPeak  -venn venn_mergepeaks_dko123.txt > mergepeaks_dko123.txt
+
+### select only those peaks that are intersecting on the replicates (per condition)
+grep '4WTRH_S21-3WTMN_S20-peaks-rm-pcr-broad-pval_peaks.broadPeak|Dfl1-mapR_S33-Dfl1-control_S34-peaks-rm-pcr-broad-pval_peaks.broadPeak|Dfl2-mapR_S35-Dfl2-control_S36-peaks-rm-pcr-broad-pval_peaks.broadPeak' mergepeaks_dfl123.txt > intersect_mergepeaks_dfl123.txt
+grep '1DKORH_S18-2DKOMN_S19-peaks-rm-pcr-broad-pval_peaks.broadPeak|DKO1-mapR_S29-DKO1-control_S30-peaks-rm-pcr-broad-pval_peaks.broadPeak|DKO2-mapR_S31-DKO2-control_S32-peaks-rm-pcr-broad-pval_peaks.broadPeak' mergepeaks_dko123.txt > intersect_mergepeaks_dko123.txt
+
+### get the union of the intersected peaks in each condition 
+mergePeaks intersect_mergepeaks_dfl123.txt intersect_mergepeaks_dko123.txt -venn venn_intersect_dfl_dko_123.txt > mergepeaks_intersect_dfl_dko_123.txt
+
+### remove peaks that are in the "blacklist" regions in the genome
+/home/danielasc/software/bedtools2/bin/intersectBed -b  /mnt/BioAdHoc/Groups/RaoLab/Edahi/01.Genomes/Mus_musculus/UCSC/mm10/Sequence/Blacklist/Blacklist.bed -a mergepeaks_intersect_dfl_dko_123.bed -v > mergepeaks_intersect_dfl_dko_123_rm_bl.bed
