@@ -37,4 +37,5 @@ $TEMP/TrDdp.R /mnt/BioScratch/danielasc/HTGTS/debugged2/$Sample/results/$Sample/
 /mnt/BioApps/htgts/transloc_pipeline/bin/../R/TranslocPlot.R /mnt/BioScratch/danielasc/HTGTS/debugged2/${Sample}/results/${Sample}/${Sample}_result.tlx /mnt/BioScratch/danielasc/HTGTS/debugged2/${Sample}/results/${Sample}/${Sample}.pdf         binsize=2000000 strand=2 assembly=mm10 brkchr=chr12 brksite=113425701 brkstrand=-1
 /mnt/BioApps/htgts/transloc_pipeline/bin/../R/TranslocPlot.R /mnt/BioScratch/danielasc/HTGTS/debugged2/${Sample}/results/${Sample}/${Sample}_result.tlx /mnt/BioScratch/danielasc/HTGTS/debugged2/${Sample}/results/${Sample}/${Sample}_brksite.pdf strand=0 assembly=mm10 brkchr=chr12 brksite=113425701 brkstrand=-1 chr=chr12 rmid=113425701 rwindow=50000 binnum=100 plottype=linear
 
+#### We used the files with *result.tlx for all the further analysis
 
