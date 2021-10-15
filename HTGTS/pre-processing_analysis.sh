@@ -1,4 +1,4 @@
-### Use HTGTS6 pipeline (https://github.com/robinmeyers/transloc_pipeline)
+### Use HTGTS pipeline (https://github.com/robinmeyers/transloc_pipeline)
 
 #!/bin/bash -x
 #PBS -N HTGTS-DFL-1
@@ -19,7 +19,7 @@ TEMP=/mnt/BioScratch/danielasc
 Samples=(HTGTS-DFL-1 HTGTS-DFL-2 HTGTS-DKO-1 HTGTS-DKO-2 )
 
 # >4. Indicate sample and run the Wrapper:
-#   - Will die during mark_duplicate_junctions
+### HTGTS-DFL-1 ==0,  HTGTS-DFL-2 ==1,  HTGTS-DKO-1 ==2, HTGTS-DKO-2 ==3
 
 Sample=${Samples[0]}
 TranslocWrapper.pl    /mnt/BioScratch/danielasc/HTGTS/debugged2/$Sample/metadata.txt /mnt/BioScratch/danielasc/HTGTS/debugged2/$Sample/preprocess /mnt/BioScratch/danielasc/HTGTS/debugged2/$Sample/results --threads 8
