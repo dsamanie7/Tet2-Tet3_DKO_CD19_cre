@@ -29,3 +29,29 @@ qsub  /mnt/BioScratch/danielasc/20200610/scripts/macs2_bg4_input_${CHIP}-${INPUT
 rm TEMP
 done
  
+### Get those peaks that are intersecting in each condition 
+
+mergePeaks /mnt/BioScratch/danielasc/20200610/macs2/Dfl1-Gquad_S23-Dflx-Input_S6-peaks-rm-pcr_peaks.narrowPeak /mnt/BioScratch/danielasc/20200610/macs2/Dflx-mBG4_S9-Dflx-Input_S6-peaks-rm-pcr_peaks.narrowPeak -venn /mnt/BioScratch/danielasc/20200610/Gquad/venn_mergepeaks_dflx12.txt > /mnt/BioScratch/danielasc/20200610/Gquad/mergepeaks_dflx12.txt
+mergePeaks /mnt/BioScratch/danielasc/20200610/macs2/DKo1-G-quad_S24-DKO-Input_S7-peaks-rm-pcr_peaks.narrowPeak /mnt/BioScratch/danielasc/20200610/macs2/DKO-mBG4_S10-DKO-Input_S7-peaks-rm-pcr_peaks.narrowPeak -venn /mnt/BioScratch/danielasc/20200610/Gquad/venn_mergepeaks_dko12.txt > /mnt/BioScratch/danielasc/20200610/Gquad/mergepeaks_dko12.txt
+
+cd /mnt/BioScratch/danielasc/20200610/Gquad
+grep '/mnt/BioScratch/danielasc/20200610/macs2/Dfl1-Gquad_S23-Dflx-Input_S6-peaks-rm-pcr_peaks.narrowPeak|/mnt/BioScratch/danielasc/20200610/macs2/Dflx-mBG4_S9-Dflx-Input_S6-peaks-rm-pcr_peaks.narrowPeak' mergepeaks_dflx12.txt > intersection_mergepeaks_dflx12.txt
+grep '/mnt/BioScratch/danielasc/20200610/macs2/DKo1-G-quad_S24-DKO-Input_S7-peaks-rm-pcr_peaks.narrowPeak|/mnt/BioScratch/danielasc/20200610/macs2/DKO-mBG4_S10-DKO-Input_S7-peaks-rm-pcr_peaks.narrowPeak' mergepeaks_dko12.txt > intersection_mergepeaks_dko12.txt
+
+### Get the union of the intersected peaks 
+
+cd /mnt/BioScratch/danielasc/20200610/Gquad
+
+mergePeaks intersection_mergepeaks_dko12.txt intersection_mergepeaks_dflx12.txt -venn /mnt/BioScratch/danielasc/20200610/Gquad/venn_mergepeaks_intersection_dko12_dflx12.txt > /mnt/BioScratch/danielasc/20200610/Gquad/mergepeaks_intersection_dko12_dflx12.txt
+grep 'intersection_mergepeaks_dko12.txt|intersection_mergepeaks_dflx12.txt' mergepeaks_intersection_dko12_dflx12.txt > shared_dflx12_dko12.txt
+grep 'intersection_mergepeaks_dflx12.txt' mergepeaks_intersection_dko12_dflx12.txt |grep -v 'intersection_mergepeaks_dko12.txt|intersection_mergepeaks_dflx12.txt' > unique_dflx12.txt
+grep 'intersection_mergepeaks_dko12.txt' mergepeaks_intersection_dko12_dflx12.txt |grep -v 'intersection_mergepeaks_dko12.txt|intersection_mergepeaks_dflx12.txt'> unique_dko12.txt
+
+ #### REMOVE BLACKLISTED REGIONS
+ cd /mnt/BioScratch/danielasc/20200610/Gquad
+
+ /home/danielasc/software/bedtools2/bin/intersectBed -b  /mnt/BioAdHoc/Groups/RaoLab/Edahi/01.Genomes/Mus_musculus/UCSC/mm10/Sequence/Blacklist/Blacklist.bed -a unique_dflx12.bed -v > unique_dflx12_bl_rm.bed
+ /home/danielasc/software/bedtools2/bin/intersectBed -b  /mnt/BioAdHoc/Groups/RaoLab/Edahi/01.Genomes/Mus_musculus/UCSC/mm10/Sequence/Blacklist/Blacklist.bed -a unique_dko12.bed -v > unique_dko12_bl_rm.bed
+ /home/danielasc/software/bedtools2/bin/intersectBed -b  /mnt/BioAdHoc/Groups/RaoLab/Edahi/01.Genomes/Mus_musculus/UCSC/mm10/Sequence/Blacklist/Blacklist.bed -a shared_dflx12_dko12.bed -v > shared_dflx12_dko12_bl_rm.bed
+
+cat unique_dflx12_bl_rm.bed unique_dko12_bl_rm.bed shared_dflx12_dko12_bl_rm.bed /mnt/BioScratch/danielasc/20200610/Gquad/union_corrected_regions.bed
